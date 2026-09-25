@@ -1,0 +1,6 @@
+TEST_USERNAME = "standard_user"
+TEST_PASSWORD = "secret_sauce"
+TEST_PRODUCT_NAME = "Sauce Labs Backpack"
+TEST_FIRST_NAME = "John"
+TEST_LAST_NAME = "Smith"
+TEST_POSTAL_CODE = "00-001"
