@@ -9,13 +9,13 @@ class CartPage(BasePage):
     CHECKOUT_BUTTON = '[data-test="checkout"]'
 
     def get_title(self):
-        return self.get_locator(self.TITLE)
+        return self.page.locator(self.TITLE)
 
     def get_cart_items(self):
-        return self.get_locator(self.CART_ITEMS)
+        return self.page.locator(self.CART_ITEMS)
 
     def get_product_names(self):
-        return self.get_locator(self.PRODUCT_NAMES)
+        return self.page.locator(self.PRODUCT_NAMES)
 
     def get_product_by_name(self, product_name):
         return self.page.locator(self.PRODUCT_NAMES).filter(
@@ -23,4 +23,4 @@ class CartPage(BasePage):
         )
 
     def start_checkout(self):
-        self.click(self.CHECKOUT_BUTTON)
+        self.page.locator(self.CHECKOUT_BUTTON).click()

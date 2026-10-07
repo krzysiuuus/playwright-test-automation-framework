@@ -8,6 +8,10 @@ from page_object_pattern.pages.checkout_overview_page import CheckoutOverviewPag
 from page_object_pattern.pages.checkout_complete_page import CheckoutCompletePage
 
 
+@pytest.fixture(scope="session")
+def base_url(pytestconfig):
+    return pytestconfig.getini("base_url")
+
 
 @pytest.fixture
 def login_page(page):

@@ -11,6 +11,6 @@ class LoginPage(BasePage):
         self.open(base_url)
 
     def login(self, username, password):
-        self.fill(self.USERNAME_INPUT, username)
-        self.fill(self.PASSWORD_INPUT, password)
-        self.click(self.LOGIN_BUTTON)
+        self.page.locator(self.USERNAME_INPUT).fill(username)
+        self.page.locator(self.PASSWORD_INPUT).fill(password)
+        self.page.locator(self.LOGIN_BUTTON).click()

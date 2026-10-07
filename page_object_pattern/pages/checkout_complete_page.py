@@ -7,7 +7,7 @@ class CheckoutCompletePage(BasePage):
     COMPLETE_HEADER = '[data-test="complete-header"]'
 
     def get_title(self):
-        return self.get_locator(self.TITLE)
+        return self.page.locator(self.TITLE)
 
     def get_complete_header(self):
-        return self.get_locator(self.COMPLETE_HEADER)
+        return self.page.locator(self.COMPLETE_HEADER)

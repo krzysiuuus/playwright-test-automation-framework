@@ -7,7 +7,7 @@ class CheckoutOverviewPage(BasePage):
     FINISH_BUTTON = '[data-test="finish"]'
 
     def get_title(self):
-        return self.get_locator(self.TITLE)
+        return self.page.locator(self.TITLE)
 
     def finish_checkout(self):
-        self.click(self.FINISH_BUTTON)
+        self.page.locator(self.FINISH_BUTTON).click()

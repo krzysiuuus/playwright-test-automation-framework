@@ -1,7 +1,7 @@
 from playwright.sync_api import Page, expect
 
 
-def test_playwright_homepage(page: Page):
+def test_playwright_homepage(page):
     page.goto("https://playwright.dev/")
 
     expect(page).to_have_title(

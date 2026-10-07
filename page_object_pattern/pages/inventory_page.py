@@ -9,13 +9,13 @@ class InventoryPage(BasePage):
     CART_LINK = '[data-test="shopping-cart-link"]'
 
     def add_backpack_to_cart(self):
-        self.click(self.ADD_BACKPACK_BUTTON)
+        self.page.locator(self.ADD_BACKPACK_BUTTON).click()
 
     def open_cart(self):
-        self.click(self.CART_LINK)
+        self.page.locator(self.CART_LINK).click()
 
     def get_title(self):
-        return self.get_locator(self.TITLE)
+        return self.page.locator(self.TITLE)
 
     def get_inventory_list(self):
-        return self.get_locator(self.INVENTORY_LIST)
+        return self.page.locator(self.INVENTORY_LIST)
