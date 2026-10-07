@@ -1,4 +1,6 @@
-from page_object_pattern.pages.base_page import BasePage
+import allure
+
+from page_objects.pages.base_page import BasePage
 
 
 class CheckoutPage(BasePage):
@@ -8,10 +10,12 @@ class CheckoutPage(BasePage):
     POSTAL_CODE_INPUT = '[data-test="postalCode"]'
     CONTINUE_BUTTON = '[data-test="continue"]'
 
+    @allure.step("Fill customer data")
     def fill_customer_data(self, first_name, last_name, postal_code):
         self.page.locator(self.FIRST_NAME_INPUT).fill(first_name)
         self.page.locator(self.LAST_NAME_INPUT).fill(last_name)
         self.page.locator(self.POSTAL_CODE_INPUT).fill(postal_code)
 
+    @allure.step("Continue checkout")
     def continue_checkout(self):
         self.page.locator(self.CONTINUE_BUTTON).click()

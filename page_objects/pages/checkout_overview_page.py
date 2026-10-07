@@ -1,4 +1,6 @@
-from page_object_pattern.pages.base_page import BasePage
+import allure
+
+from page_objects.pages.base_page import BasePage
 
 
 class CheckoutOverviewPage(BasePage):
@@ -9,5 +11,6 @@ class CheckoutOverviewPage(BasePage):
     def get_title(self):
         return self.page.locator(self.TITLE)
 
+    @allure.step("Finish checkout")
     def finish_checkout(self):
         self.page.locator(self.FINISH_BUTTON).click()

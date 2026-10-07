@@ -1,4 +1,4 @@
-from page_object_pattern.pages.base_page import BasePage
+from page_objects.pages.base_page import BasePage
 
 
 class CheckoutCompletePage(BasePage):

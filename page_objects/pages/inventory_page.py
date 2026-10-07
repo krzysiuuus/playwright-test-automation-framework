@@ -1,4 +1,6 @@
-from page_object_pattern.pages.base_page import BasePage
+import allure
+
+from page_objects.pages.base_page import BasePage
 
 
 class InventoryPage(BasePage):
@@ -8,9 +10,11 @@ class InventoryPage(BasePage):
     ADD_BACKPACK_BUTTON = '[data-test="add-to-cart-sauce-labs-backpack"]'
     CART_LINK = '[data-test="shopping-cart-link"]'
 
+    @allure.step("Add Sauce Labs Backpack to cart")
     def add_backpack_to_cart(self):
         self.page.locator(self.ADD_BACKPACK_BUTTON).click()
 
+    @allure.step("Open shopping cart")
     def open_cart(self):
         self.page.locator(self.CART_LINK).click()
 

@@ -1,4 +1,6 @@
-from page_object_pattern.pages.base_page import BasePage
+import allure
+
+from page_objects.pages.base_page import BasePage
 
 
 class CartPage(BasePage):
@@ -22,5 +24,6 @@ class CartPage(BasePage):
             has_text=product_name
         )
 
+    @allure.step("Start checkout")
     def start_checkout(self):
         self.page.locator(self.CHECKOUT_BUTTON).click()

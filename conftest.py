@@ -1,11 +1,11 @@
 import pytest
 
-from page_object_pattern.pages.login_page import LoginPage
-from page_object_pattern.pages.inventory_page import InventoryPage
-from page_object_pattern.pages.cart_page import CartPage
-from page_object_pattern.pages.checkout_page import CheckoutPage
-from page_object_pattern.pages.checkout_overview_page import CheckoutOverviewPage
-from page_object_pattern.pages.checkout_complete_page import CheckoutCompletePage
+from page_objects.pages.login_page import LoginPage
+from page_objects.pages.inventory_page import InventoryPage
+from page_objects.pages.cart_page import CartPage
+from page_objects.pages.checkout_page import CheckoutPage
+from page_objects.pages.checkout_overview_page import CheckoutOverviewPage
+from page_objects.pages.checkout_complete_page import CheckoutCompletePage
 
 
 @pytest.fixture(scope="session")
