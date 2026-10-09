@@ -18,7 +18,9 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                    docker run --rm --ipc=host \
+                    docker rm -f playwright-tests || true
+
+                    docker run --name playwright-tests --ipc=host \
                     playwright-test-framework \
                     pytest -n auto \
                     --browser chromium \
@@ -31,6 +33,20 @@ pipeline {
 
     post {
         always {
+            sh '''
+                docker cp playwright-tests:/app/allure-results ./allure-results || true
+                docker cp playwright-tests:/app/test-results ./test-results || true
+                docker rm -f playwright-tests || true
+            '''
+
+            archiveArtifacts artifacts: 'test-results/**/*',
+                             allowEmptyArchive: true
+
+            allure([
+                includeProperties: false,
+                results: [[path: 'allure-results']]
+            ])
+
             echo 'Pipeline finished'
         }
     }
