@@ -22,16 +22,23 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh '''
-                    docker rm -f playwright-tests || true
+                withCredentials([
+                    string(credentialsId: 'reqres-api-key', variable: 'REQRES_API_KEY')
+                ]) {
+                    sh '''
+                        docker rm -f playwright-tests || true
 
-                    docker run --name playwright-tests --ipc=host \
-                    playwright-test-framework \
-                    pytest -n auto \
-                    --browser chromium \
-                    --browser firefox \
-                    --browser webkit
-                '''
+                        docker run --name playwright-tests --ipc=host \
+                        -e API_BASE_URL=https://jsonplaceholder.typicode.com \
+                        -e REQRES_BASE_URL=https://reqres.in/api/ \
+                        -e REQRES_API_KEY=$REQRES_API_KEY \
+                        playwright-test-framework \
+                        pytest -n auto \
+                        --browser chromium \
+                        --browser firefox \
+                        --browser webkit
+                    '''
+                }
             }
         }
     }
