@@ -52,6 +52,11 @@ jobs:
   api-tests:
     runs-on: ubuntu-latest
 
+    env:
+      API_BASE_URL: https://jsonplaceholder.typicode.com
+      REQRES_BASE_URL: https://reqres.in/api/
+      REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
