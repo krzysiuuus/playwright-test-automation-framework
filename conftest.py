@@ -9,6 +9,7 @@ from page_objects.pages.cart_page import CartPage
 from page_objects.pages.checkout_page import CheckoutPage
 from page_objects.pages.checkout_overview_page import CheckoutOverviewPage
 from page_objects.pages.checkout_complete_page import CheckoutCompletePage
+from api_tests.data.auth_payload import LOGIN_PAYLOAD
 
 load_dotenv()
 
@@ -88,3 +89,28 @@ def reqres_request_context(playwright, reqres_base_url, reqres_api_key):
     yield request_context
 
     request_context.dispose()
+
+
+@pytest.fixture
+def session_token(reqres_request_context):
+    login_response = reqres_request_context.post(
+        "app-users/login",
+        data=LOGIN_PAYLOAD
+    )
+
+    assert login_response.status == 200
+
+    magic_token = login_response.json()["data"]["token"]
+
+    verify_response = reqres_request_context.post(
+        "app-users/verify",
+        data={
+            "token": magic_token
+        }
+    )
+
+    assert verify_response.status == 200
+
+    session_token = verify_response.json()["data"]["session_token"]
+
+    return session_token
