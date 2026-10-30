@@ -65,9 +65,14 @@ def test_login_without_api_key(playwright, reqres_base_url):
         }
     )
 
+    payload = {
+        "project_id": LOGIN_PAYLOAD["project_id"],
+        "email": "no-api-key@example.com"
+    }
+
     response = request.post(
         "app-users/login",
-        data=LOGIN_PAYLOAD
+        data=payload
     )
 
     assert response.status == 404
@@ -81,6 +86,11 @@ def test_login_without_api_key(playwright, reqres_base_url):
 
 
 def test_login_with_invalid_api_key(playwright, reqres_base_url):
+    payload = {
+        "project_id": LOGIN_PAYLOAD["project_id"],
+        "email": "invalid-api-key@example.com"
+    }
+
     request = playwright.request.new_context(
         base_url=reqres_base_url,
         extra_http_headers={
@@ -93,7 +103,7 @@ def test_login_with_invalid_api_key(playwright, reqres_base_url):
 
     response = request.post(
         "app-users/login",
-        data=LOGIN_PAYLOAD
+        data=payload
     )
 
     assert response.status == 404
@@ -109,7 +119,7 @@ def test_login_with_invalid_api_key(playwright, reqres_base_url):
 def test_login_with_invalid_project_id(reqres_request_context):
     invalid_payload = {
         "project_id": 999999,
-        "email": LOGIN_PAYLOAD["email"]
+        "email": "invalid-project@example.com"
     }
 
     response = reqres_request_context.post(
