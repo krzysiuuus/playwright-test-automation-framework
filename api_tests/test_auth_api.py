@@ -5,10 +5,10 @@ from api_tests.data.auth_payload import LOGIN_PAYLOAD
 
 @allure.feature("Authentication API")
 @allure.title("Verify login request")
-def test_authenticated_user_can_access_profile(reqres_request_context, session_token):
+def test_authenticated_user_can_access_profile(reqres_request_context, authenticated_headers):
     me_response = reqres_request_context.get(
         "app-users/me",
-        headers={"Authorization": f"Bearer {session_token}"}
+        headers=authenticated_headers
     )
 
     assert me_response.status == 200

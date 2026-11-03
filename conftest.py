@@ -15,7 +15,11 @@ load_dotenv()
 
 @pytest.fixture(scope="session")
 def reqres_base_url():
-    return os.getenv("REQRES_BASE_URL")
+    url = os.getenv("REQRES_BASE_URL")
+
+    assert url, "REQRES_BASE_URL environment variable is not set"
+
+    return url
 
 
 @pytest.fixture(scope="session")
@@ -25,7 +29,11 @@ def base_url(pytestconfig):
 
 @pytest.fixture(scope="session")
 def api_base_url():
-    return os.getenv("API_BASE_URL")
+    url = os.getenv("API_BASE_URL")
+
+    assert url, "API_BASE_URL environment variable is not set"
+
+    return url
 
 
 @pytest.fixture
@@ -71,7 +79,11 @@ def api_request_context(playwright, api_base_url):
 
 @pytest.fixture(scope="session")
 def reqres_api_key():
-    return os.getenv("REQRES_API_KEY")
+    api_key = os.getenv("REQRES_API_KEY")
+
+    assert api_key, "REQRES_API_KEY environment variable is not set"
+
+    return api_key
 
 
 @pytest.fixture
@@ -114,3 +126,10 @@ def session_token(reqres_request_context):
     session_token = verify_response.json()["data"]["session_token"]
 
     return session_token
+
+
+@pytest.fixture
+def authenticated_headers(session_token):
+    return {
+        "Authorization": f"Bearer {session_token}"
+    }
