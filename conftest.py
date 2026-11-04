@@ -133,3 +133,25 @@ def authenticated_headers(session_token):
     return {
         "Authorization": f"Bearer {session_token}"
     }
+
+
+@pytest.fixture
+def httpbin_request_context(playwright):
+    request_context = playwright.request.new_context(
+        base_url="https://httpbin.org"
+    )
+
+    yield request_context
+
+    request_context.dispose()
+
+
+@pytest.fixture
+def github_raw_request_context(playwright):
+    request_context = playwright.request.new_context(
+        base_url="https://raw.githubusercontent.com"
+    )
+
+    yield request_context
+
+    request_context.dispose()

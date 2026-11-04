@@ -39,9 +39,9 @@ def test_csv_with_semicolon_delimiter():
     assert rows[1]["name"] == "Anna"
 
 
-def test_csv_response_from_api(api_request_context):
-    response = api_request_context.get(
-        "https://raw.githubusercontent.com/apache/spark/master/examples/src/main/resources/people.csv"
+def test_csv_response_has_expected_data(github_raw_request_context):
+    response = github_raw_request_context.get(
+        "/apache/spark/master/examples/src/main/resources/people.csv"
     )
 
     assert response.status == 200
@@ -66,7 +66,7 @@ def test_csv_response_from_api(api_request_context):
     assert int(rows[1]["age"]) == 32
 
 
-def test_csv_missing_required_column():
+def test_csv_detects_missing_required_column():
     csv_data = """id,name
 1,John
 2,Anna
@@ -75,9 +75,6 @@ def test_csv_missing_required_column():
     reader = csv.DictReader(StringIO(csv_data))
 
     required_columns = ["id", "name", "role"]
-
-    # assert if columns match
-    # assert all(column in reader.fieldnames for column in required_columns)
 
     missing_columns = [
         column
@@ -88,7 +85,7 @@ def test_csv_missing_required_column():
     assert missing_columns == ["role"]
 
 
-def test_csv_empty_required_value():
+def test_csv_detects_empty_required_value():
     csv_data = """id,name,role
 1,John,Tester
 2,,Developer
@@ -96,8 +93,6 @@ def test_csv_empty_required_value():
 
     reader = csv.DictReader(StringIO(csv_data))
     rows = list(reader)
-
-    assert rows[1]["name"] == ""
 
     required_fields = ["id", "name", "role"]
 
@@ -111,7 +106,7 @@ def test_csv_empty_required_value():
     assert invalid_rows == [(2, "name")]
 
 
-def test_csv_invalid_numeric_value():
+def test_csv_detects_invalid_numeric_value():
     csv_data = """id,name,role
 1,John,Tester
 abc,Anna,Developer

@@ -1,21 +1,30 @@
 import json
 from pathlib import Path
 import pytest
-from jsonschema import validate, FormatChecker, ValidationError
+from jsonschema import validate, FormatChecker, ValidationError, Draft7Validator
 
 
-def test_json_response(api_request_context):
-    response = api_request_context.get("/users/1")
-
-    assert response.status == 200
-    assert "application/json" in response.headers["content-type"]
-
-    data = response.json()
-
+@pytest.fixture(scope="module")
+def user_schema():
     schema_path = Path(__file__).parent / "schemas" / "user_schema.json"
 
     with open(schema_path, "r") as file:
-        user_schema = json.load(file)
+        schema = json.load(file)
+
+    Draft7Validator.check_schema(schema)
+
+    return schema
+
+
+def test_user_response_matches_schema(api_request_context, user_schema):
+    response = api_request_context.get("/users/1")
+
+    assert response.status == 200
+    content_type = response.headers.get("content-type", "")
+
+    assert "application/json" in content_type
+
+    data = response.json()
 
     validate(
         instance=data,
@@ -70,17 +79,19 @@ def test_json_response(api_request_context):
             "format",
             ["email"]
         )
+    ],
+    ids=[
+        "invalid-id-type",
+        "missing-email",
+        "invalid-email-format"
     ]
 )
-def test_invalid_json_fails_schema_validation(
+def test_invalid_user_data_fails_schema_validation(
         invalid_data,
         expected_validator,
-        expected_path
+        expected_path,
+        user_schema
 ):
-    schema_path = Path(__file__).parent / "schemas" / "user_schema.json"
-
-    with open(schema_path, "r") as file:
-        user_schema = json.load(file)
 
     with pytest.raises(ValidationError) as error:
         validate(

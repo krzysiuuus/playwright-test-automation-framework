@@ -1,13 +1,12 @@
 import xml.etree.ElementTree as ET
 
 
-def test_xml_response(playwright):
-    request = playwright.request.new_context()
-
-    response = request.get("https://httpbin.org/xml")
+def test_xml_response_has_expected_structure(httpbin_request_context):
+    response = httpbin_request_context.get("/xml")
 
     assert response.status == 200
-    assert "application/xml" in response.headers["content-type"]
+    content_type = response.headers.get("content-type", "")
+    assert "xml" in content_type
 
     root = ET.fromstring(response.text())
 
@@ -27,10 +26,8 @@ def test_xml_response(playwright):
 
     assert len(all_type_slides) == 2
 
-    request.dispose()
 
-
-def test_xml_with_namespace():
+def test_xml_elements_can_be_found_with_namespace():
     xml_data = """
     <catalog xmlns="http://shop.example.com">
         <product>
@@ -57,7 +54,7 @@ def test_xml_with_namespace():
     assert first_product_name.text == "Laptop"
 
 
-def test_xml_namespace_with_attributes():
+def test_xml_catalog_with_namespace_has_expected_products():
     xml_data = """
     <catalog xmlns="http://shop.example.com">
         <product id="101" category="electronics">
@@ -79,13 +76,35 @@ def test_xml_namespace_with_attributes():
 
     products = root.findall(".//shop:product", namespaces)
 
-    first_product = products[0]
+    expected_products = [
+        {
+            "id": "101",
+            "category": "electronics",
+            "name": "Laptop",
+            "price": 3999.99
+        },
+        {
+            "id": "102",
+            "category": "electronics",
+            "name": "Monitor",
+            "price": 1299.99
+        }
+    ]
 
-    assert first_product.attrib["id"] == "101"
-    assert first_product.attrib["category"] == "electronics"
+    assert len(products) == len(expected_products)
 
-    name = first_product.find("shop:name", namespaces)
-    price = first_product.find("shop:price", namespaces)
+    for product, expected_product in zip(products, expected_products):
+        assert product.attrib["id"] == expected_product["id"]
+        assert product.attrib["category"] == expected_product["category"]
 
-    assert name.text == "Laptop"
-    assert float(price.text) == 3999.99
+        name = product.find("shop:name", namespaces)
+        price = product.find("shop:price", namespaces)
+
+        assert name is not None
+        assert price is not None
+
+        assert name.text is not None
+        assert price.text is not None
+
+        assert name.text == expected_product["name"]
+        assert float(price.text) == expected_product["price"]

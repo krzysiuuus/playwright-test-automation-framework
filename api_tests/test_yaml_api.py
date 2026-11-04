@@ -1,9 +1,8 @@
 import yaml
 import pytest
-import yaml
 
 
-def test_yaml_parsing():
+def test_yaml_user_data_has_expected_structure():
     yaml_data = """
     user:
       id: 1
@@ -22,7 +21,7 @@ def test_yaml_parsing():
     assert data["user"]["roles"][0] == "tester"
 
 
-def test_yaml_nested_structure():
+def test_yaml_environment_config_has_expected_values():
     yaml_data = """
     environment:
       name: test
@@ -38,20 +37,21 @@ def test_yaml_nested_structure():
     """
 
     data = yaml.safe_load(yaml_data)
+    environment = data["environment"]
 
-    assert data["environment"]["name"] == "test"
-    assert data["environment"]["retries"] == 3
-    assert len(data["environment"]["browsers"]) == 3
-    assert data["environment"]["browsers"][1] == "firefox"
+    assert environment["name"] == "test"
+    assert environment["retries"] == 3
+    assert len(environment["browsers"]) == 3
+    assert environment["browsers"][1] == "firefox"
 
-    database = data["environment"]["database"]
+    database = environment["database"]
 
     assert database["host"] == "localhost"
     assert database["port"] == 5432
     assert database["enabled"] is True
 
 
-def test_invalid_yaml_indentation():
+def test_invalid_yaml_indentation_raises_error():
     invalid_yaml = """
     user:
       name: John
