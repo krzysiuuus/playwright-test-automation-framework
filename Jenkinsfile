@@ -19,7 +19,22 @@ pipeline {
                 sh 'docker build -t playwright-test-framework .'
             }
         }
-
+        stage('Smoke Tests') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'reqres-api-key', variable: 'REQRES_API_KEY')
+                ]) {
+                    sh '''
+                        docker run --rm --ipc=host \
+                        -e API_BASE_URL=https://jsonplaceholder.typicode.com \
+                        -e REQRES_BASE_URL=https://reqres.in/api/ \
+                        -e REQRES_API_KEY=$REQRES_API_KEY \
+                        playwright-test-framework \
+                        pytest -m smoke -v --browser chromium
+                    '''
+                }
+            }
+        }
         stage('Run Tests') {
             steps {
                 withCredentials([
@@ -33,7 +48,7 @@ pipeline {
                         -e REQRES_BASE_URL=https://reqres.in/api/ \
                         -e REQRES_API_KEY=$REQRES_API_KEY \
                         playwright-test-framework \
-                        pytest -n auto \
+                        pytest -m regression -n auto \
                         --browser chromium \
                         --browser firefox \
                         --browser webkit
