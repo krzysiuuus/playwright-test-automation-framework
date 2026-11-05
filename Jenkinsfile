@@ -61,13 +61,21 @@ pipeline {
     post {
         always {
             sh '''
+                rm -rf test-results
+
                 docker cp playwright-tests:/app/allure-results ./allure-results || true
-                docker cp playwright-tests:/app/test-results ./test-results || true
+                docker cp playwright-tests:/app/test-results ./test-results 2>/dev/null || true
                 docker rm -f playwright-tests || true
             '''
 
-            archiveArtifacts artifacts: 'test-results/**/*',
-                             allowEmptyArchive: true
+            script {
+                if (fileExists('test-results')) {
+                    archiveArtifacts artifacts: 'test-results/**/*',
+                                     allowEmptyArchive: true
+                } else {
+                    echo 'No Playwright failure artifacts to archive'
+                }
+            }
 
             allure([
                 includeProperties: false,
