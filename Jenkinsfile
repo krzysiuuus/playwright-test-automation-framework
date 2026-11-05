@@ -48,7 +48,7 @@ pipeline {
                         -e REQRES_BASE_URL=https://reqres.in/api/ \
                         -e REQRES_API_KEY=$REQRES_API_KEY \
                         playwright-test-framework \
-                        pytest -m regression -n auto \
+                        pytest -m "regression and (ui or not smoke)" -n auto \
                         --browser chromium \
                         --browser firefox \
                         --browser webkit
