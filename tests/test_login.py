@@ -1,8 +1,14 @@
+import pytest
 from playwright.sync_api import expect
 
 from test_data.test_data import TEST_USERNAME, TEST_PASSWORD
 
 
+pytestmark = pytest.mark.ui
+
+
+@pytest.mark.smoke
+@pytest.mark.regression
 def test_successful_login(page, login_page, inventory_page, base_url):
     login_page.open_login_page(base_url)
     login_page.login(TEST_USERNAME, TEST_PASSWORD)

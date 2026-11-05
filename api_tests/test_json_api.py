@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 from jsonschema import validate, FormatChecker, ValidationError, Draft7Validator
 
+pytestmark = pytest.mark.api
 
 @pytest.fixture(scope="module")
 def user_schema():
@@ -16,6 +17,8 @@ def user_schema():
     return schema
 
 
+@pytest.mark.smoke
+@pytest.mark.regression
 def test_user_response_matches_schema(api_request_context, user_schema):
     response = api_request_context.get("/users/1")
 
@@ -86,13 +89,13 @@ def test_user_response_matches_schema(api_request_context, user_schema):
         "invalid-email-format"
     ]
 )
+@pytest.mark.regression
 def test_invalid_user_data_fails_schema_validation(
         invalid_data,
         expected_validator,
         expected_path,
         user_schema
 ):
-
     with pytest.raises(ValidationError) as error:
         validate(
             instance=invalid_data,

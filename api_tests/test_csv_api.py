@@ -1,7 +1,11 @@
 import csv
 from io import StringIO
+import pytest
+
+pytestmark = pytest.mark.api
 
 
+@pytest.mark.regression
 def test_csv_parsing():
     csv_data = """id,name,role
 1,John,Tester
@@ -20,6 +24,7 @@ def test_csv_parsing():
     assert int(rows[1]["id"]) == 2
 
 
+@pytest.mark.regression
 def test_csv_with_semicolon_delimiter():
     csv_data = """id;name;role
 1;John;Tester
@@ -39,6 +44,7 @@ def test_csv_with_semicolon_delimiter():
     assert rows[1]["name"] == "Anna"
 
 
+@pytest.mark.regression
 def test_csv_response_has_expected_data(github_raw_request_context):
     response = github_raw_request_context.get(
         "/apache/spark/master/examples/src/main/resources/people.csv"
@@ -66,6 +72,7 @@ def test_csv_response_has_expected_data(github_raw_request_context):
     assert int(rows[1]["age"]) == 32
 
 
+@pytest.mark.regression
 def test_csv_detects_missing_required_column():
     csv_data = """id,name
 1,John
@@ -85,6 +92,7 @@ def test_csv_detects_missing_required_column():
     assert missing_columns == ["role"]
 
 
+@pytest.mark.regression
 def test_csv_detects_empty_required_value():
     csv_data = """id,name,role
 1,John,Tester
@@ -106,6 +114,7 @@ def test_csv_detects_empty_required_value():
     assert invalid_rows == [(2, "name")]
 
 
+@pytest.mark.regression
 def test_csv_detects_invalid_numeric_value():
     csv_data = """id,name,role
 1,John,Tester

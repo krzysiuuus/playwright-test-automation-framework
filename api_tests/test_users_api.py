@@ -1,6 +1,11 @@
 from playwright.sync_api import expect
+import pytest
+
+pytestmark = pytest.mark.api
 
 
+@pytest.mark.smoke
+@pytest.mark.regression
 def test_get_user(api_request_context):
     response = api_request_context.get("/users/1")
 
@@ -13,6 +18,7 @@ def test_get_user(api_request_context):
     assert response_body["email"] == "Sincere@april.biz"
 
 
+@pytest.mark.regression
 def test_create_post(api_request_context):
     payload = {
         "title": "Playwright API test",

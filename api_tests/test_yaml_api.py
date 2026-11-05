@@ -1,7 +1,10 @@
 import yaml
 import pytest
 
+pytestmark = pytest.mark.api
 
+
+@pytest.mark.regression
 def test_yaml_user_data_has_expected_structure():
     yaml_data = """
     user:
@@ -21,6 +24,7 @@ def test_yaml_user_data_has_expected_structure():
     assert data["user"]["roles"][0] == "tester"
 
 
+@pytest.mark.regression
 def test_yaml_environment_config_has_expected_values():
     yaml_data = """
     environment:
@@ -51,6 +55,7 @@ def test_yaml_environment_config_has_expected_values():
     assert database["enabled"] is True
 
 
+@pytest.mark.regression
 def test_invalid_yaml_indentation_raises_error():
     invalid_yaml = """
     user:

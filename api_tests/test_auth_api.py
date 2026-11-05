@@ -1,10 +1,15 @@
 import allure
+import pytest
 
 from api_tests.data.auth_payload import LOGIN_PAYLOAD
 
 
+pytestmark = pytest.mark.api
+
 @allure.feature("Authentication API")
 @allure.title("Verify login request")
+@pytest.mark.smoke
+@pytest.mark.regression
 def test_authenticated_user_can_access_profile(reqres_request_context, authenticated_headers):
     me_response = reqres_request_context.get(
         "app-users/me",
@@ -20,6 +25,7 @@ def test_authenticated_user_can_access_profile(reqres_request_context, authentic
     assert me_body["data"]["status"] == "active"
 
 
+@pytest.mark.regression
 def test_profile_access_without_token(reqres_request_context):
     response = reqres_request_context.get("app-users/me")
 
@@ -30,6 +36,7 @@ def test_profile_access_without_token(reqres_request_context):
     assert response_body["error"] == "missing_bearer_token"
 
 
+@pytest.mark.regression
 def test_profile_access_with_invalid_token(reqres_request_context):
     response = reqres_request_context.get(
         "app-users/me",
@@ -43,6 +50,7 @@ def test_profile_access_with_invalid_token(reqres_request_context):
     assert response_body["error"] == "invalid_session"
 
 
+@pytest.mark.regression
 def test_profile_access_with_wrong_auth_scheme(reqres_request_context):
     response = reqres_request_context.get(
         "app-users/me",

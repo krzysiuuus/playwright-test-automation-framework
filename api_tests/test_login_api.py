@@ -1,6 +1,10 @@
 from api_tests.data.auth_payload import LOGIN_PAYLOAD
+import pytest
+
+pytestmark = pytest.mark.api
 
 
+@pytest.mark.regression
 def test_login_without_email(reqres_request_context):
     invalid_payload = {
         "project_id": LOGIN_PAYLOAD["project_id"]
@@ -18,6 +22,7 @@ def test_login_without_email(reqres_request_context):
     assert response_body["error"] == "email is required"
 
 
+@pytest.mark.regression
 def test_login_with_empty_email(reqres_request_context):
     invalid_payload = {
         "project_id": LOGIN_PAYLOAD["project_id"],
@@ -36,6 +41,7 @@ def test_login_with_empty_email(reqres_request_context):
     assert response_body["error"] == "email is required"
 
 
+@pytest.mark.regression
 def test_login_with_invalid_email_format(reqres_request_context):
     invalid_payload = {
         "project_id": LOGIN_PAYLOAD["project_id"],
@@ -55,6 +61,7 @@ def test_login_with_invalid_email_format(reqres_request_context):
     assert response_body["message"] == "Provide a valid email address."
 
 
+@pytest.mark.regression
 def test_login_without_api_key(playwright, reqres_base_url):
     request = playwright.request.new_context(
         base_url=reqres_base_url,
@@ -85,6 +92,7 @@ def test_login_without_api_key(playwright, reqres_base_url):
     request.dispose()
 
 
+@pytest.mark.regression
 def test_login_with_invalid_api_key(playwright, reqres_base_url):
     payload = {
         "project_id": LOGIN_PAYLOAD["project_id"],
@@ -116,6 +124,7 @@ def test_login_with_invalid_api_key(playwright, reqres_base_url):
     request.dispose()
 
 
+@pytest.mark.regression
 def test_login_with_invalid_project_id(reqres_request_context):
     invalid_payload = {
         "project_id": 999999,

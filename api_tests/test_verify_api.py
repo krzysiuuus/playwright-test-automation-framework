@@ -1,3 +1,9 @@
+import pytest
+
+pytestmark = pytest.mark.api
+
+
+@pytest.mark.regression
 def test_verify_with_invalid_magic_token(reqres_request_context):
     invalid_payload = {
         "token": "invalid-token"
@@ -16,6 +22,7 @@ def test_verify_with_invalid_magic_token(reqres_request_context):
     assert response_body["message"] == "Token not found"
 
 
+@pytest.mark.regression
 def test_verify_without_token(reqres_request_context):
     response = reqres_request_context.post(
         "app-users/verify",
@@ -29,6 +36,7 @@ def test_verify_without_token(reqres_request_context):
     assert response_body["error"] == "token is required"
 
 
+@pytest.mark.regression
 def test_verify_with_empty_token(reqres_request_context):
     response = reqres_request_context.post(
         "app-users/verify",
@@ -44,6 +52,7 @@ def test_verify_with_empty_token(reqres_request_context):
     assert response_body["error"] == "token is required"
 
 
+@pytest.mark.regression
 def test_verify_with_invalid_token_type(reqres_request_context):
     response = reqres_request_context.post(
         "app-users/verify",

@@ -1,6 +1,11 @@
 import xml.etree.ElementTree as ET
+import pytest
+
+pytestmark = pytest.mark.api
 
 
+@pytest.mark.regression
+@pytest.mark.smoke
 def test_xml_response_has_expected_structure(httpbin_request_context):
     response = httpbin_request_context.get("/xml")
 
@@ -27,6 +32,7 @@ def test_xml_response_has_expected_structure(httpbin_request_context):
     assert len(all_type_slides) == 2
 
 
+@pytest.mark.regression
 def test_xml_elements_can_be_found_with_namespace():
     xml_data = """
     <catalog xmlns="http://shop.example.com">
@@ -54,6 +60,7 @@ def test_xml_elements_can_be_found_with_namespace():
     assert first_product_name.text == "Laptop"
 
 
+@pytest.mark.regression
 def test_xml_catalog_with_namespace_has_expected_products():
     xml_data = """
     <catalog xmlns="http://shop.example.com">

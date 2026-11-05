@@ -1,8 +1,11 @@
+import pytest
 from playwright.sync_api import expect
-
 from test_data.test_data import TEST_USERNAME, TEST_PASSWORD, TEST_PRODUCT_NAME
 
+pytestmark = pytest.mark.ui
 
+
+@pytest.mark.regression
 def test_add_product_to_cart(
         page,
         login_page,

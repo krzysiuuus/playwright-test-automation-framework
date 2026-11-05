@@ -1,9 +1,13 @@
 import allure
+import pytest
 from playwright.sync_api import expect
+
+pytestmark = pytest.mark.ui
 
 
 @allure.feature("Network Mocking")
 @allure.title("Mock API response using Playwright page.route")
+@pytest.mark.regression
 def test_mock_api_response(page):
 
     def mock_user_response(route):
