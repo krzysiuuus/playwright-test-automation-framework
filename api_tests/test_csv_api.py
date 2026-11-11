@@ -4,6 +4,66 @@ import pytest
 
 pytestmark = pytest.mark.api
 
+class CsvReaderContext:
+
+    def __init__(self, csv_text):
+        self.csv_text = csv_text
+        self.file = None
+
+    def __enter__(self):
+        self.file = StringIO(self.csv_text)
+        return csv.DictReader(self.file)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.file.close()
+        return False
+
+
+@pytest.mark.regression
+def test_csv_custom_context_manager():
+    csv_data = """id,name,role
+1,John,Tester
+2,Anna,Developer
+"""
+
+    manager = CsvReaderContext(csv_data)
+
+    with manager as reader:
+        rows = list(reader)
+
+        assert len(rows) == 2
+        assert rows[0]["name"] == "John"
+
+    assert manager.file.closed
+
+
+def get_rows_by_role(csv_text, role):
+    with StringIO(csv_text) as file:
+        reader = csv.DictReader(file)
+
+        for row in reader:
+            if row["role"] == role:
+                yield row
+
+
+@pytest.mark.regression
+def test_csv_generator():
+    csv_data = """id,name,role
+1,John,Tester
+2,Anna,Developer
+3,Mike,Tester
+"""
+
+    rows = get_rows_by_role(csv_data, "Tester")
+
+    assert iter(rows) is rows
+
+    assert next(rows)["name"] == "John"
+    assert next(rows)["name"] == "Mike"
+
+    with pytest.raises(StopIteration):
+        next(rows)
+
 
 @pytest.mark.regression
 def test_csv_parsing():

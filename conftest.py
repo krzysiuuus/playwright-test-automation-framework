@@ -155,3 +155,28 @@ def github_raw_request_context(playwright):
     yield request_context
 
     request_context.dispose()
+
+
+@pytest.fixture(autouse=True)
+def log_ui_test(request):
+    if request.node.get_closest_marker("ui"):
+        print(f"START UI TEST: {request.node.name}")
+
+    yield
+
+    if request.node.get_closest_marker("ui"):
+        print(f"END UI TEST: {request.node.name}")
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--target-env",
+        action="store",
+        default="dev",
+        choices=["dev", "staging"],
+        help="Target environment for tests"
+    )
+
+@pytest.fixture
+def target_env(request):
+    return request.config.getoption("--target-env")
