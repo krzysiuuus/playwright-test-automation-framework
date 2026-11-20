@@ -157,6 +157,7 @@ def github_raw_request_context(playwright):
     request_context.dispose()
 
 
+# fixture tylko dla UI
 @pytest.fixture(autouse=True)
 def log_ui_test(request):
     if request.node.get_closest_marker("ui"):

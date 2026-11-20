@@ -21,6 +21,7 @@ def test_mock_api_response(page):
 
     page.goto("https://example.com")
 
+    # kod JavaScript bezpośrednio w przeglądarce, w kontekście otwartej strony
     page.evaluate("""
         async () => {
             const response = await fetch('/api/user');
