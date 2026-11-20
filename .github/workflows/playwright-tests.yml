@@ -38,7 +38,7 @@ jobs:
         run: playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run UI tests
-        run: pytest tests -n auto --browser ${{ matrix.browser }}
+        run: pytest tests -n auto --browser ${{ matrix.browser }} --tracing=retain-on-failure
 
       - name: Upload test artifacts
         if: failure()
