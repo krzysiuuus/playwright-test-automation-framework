@@ -34,5 +34,5 @@ def test_terms_open_in_new_tab(page):
     )
 
     expect(
-        terms_page.get_by_role("heading", name="Polityka prywatności")
-    ).to_be_visible(timeout=3000)
+        terms_page.get_by_role("heading", name="Regulamin sklepu")
+    ).to_be_visible()
