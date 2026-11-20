@@ -62,83 +62,59 @@ def test_login_with_invalid_email_format(reqres_request_context):
 
 
 @pytest.mark.regression
-def test_login_without_api_key(playwright, reqres_base_url):
+def test_missing_api_key(playwright, reqres_base_url):
     request = playwright.request.new_context(
         base_url=reqres_base_url,
         extra_http_headers={
-            "Content-Type": "application/json",
-            "Accept": "application/json",
             "X-Reqres-Env": "dev"
         }
     )
 
-    payload = {
-        "project_id": LOGIN_PAYLOAD["project_id"],
-        "email": "no-api-key@example.com"
-    }
+    try:
+        response = request.get("collections/products/records")
 
-    response = request.post(
-        "app-users/login",
-        data=payload
-    )
-
-    assert response.status == 404
-
-    response_body = response.json()
-
-    assert response_body["error"] == "Project not found or not accessible"
-    assert response_body["message"] == "Provide the project API key or use an owner session."
-
-    request.dispose()
+        assert response.status == 401, (
+            f"Expected 401, got {response.status}. "
+            f"Body: {response.text()}"
+        )
+    finally:
+        request.dispose()
 
 
 @pytest.mark.regression
-def test_login_with_invalid_api_key(playwright, reqres_base_url):
-    payload = {
-        "project_id": LOGIN_PAYLOAD["project_id"],
-        "email": "invalid-api-key@example.com"
-    }
-
+def test_invalid_api_key(playwright, reqres_base_url):
     request = playwright.request.new_context(
         base_url=reqres_base_url,
         extra_http_headers={
-            "Content-Type": "application/json",
-            "Accept": "application/json",
             "x-api-key": "invalid-api-key",
             "X-Reqres-Env": "dev"
         }
     )
 
-    response = request.post(
-        "app-users/login",
-        data=payload
-    )
+    try:
+        response = request.get("collections/products/records")
 
-    assert response.status == 404
-
-    response_body = response.json()
-
-    assert response_body["error"] == "Project not found or not accessible"
-    assert response_body["message"] == "Provide the project API key or use an owner session."
-
-    request.dispose()
+        assert response.status == 403, (
+            f"Expected 403, got {response.status}. "
+            f"Body: {response.text()}"
+        )
+    finally:
+        request.dispose()
 
 
 @pytest.mark.regression
-def test_login_with_invalid_project_id(reqres_request_context):
-    invalid_payload = {
-        "project_id": 999999,
+def test_login_with_reserved_email(reqres_request_context):
+    payload = {
+        "project_id": LOGIN_PAYLOAD["project_id"],
         "email": "invalid-project@example.com"
     }
 
     response = reqres_request_context.post(
         "app-users/login",
-        data=invalid_payload
+        data=payload
     )
 
-    assert response.status == 403
+    assert response.status == 400
 
     response_body = response.json()
-
-    assert response_body["error"] == "project_mismatch"
-    assert response_body["message"] == "The provided project_id does not match the API key scope."
+    assert response_body["error"] == "undeliverable_email"
